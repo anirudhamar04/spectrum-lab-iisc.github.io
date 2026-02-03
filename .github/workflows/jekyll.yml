@@ -46,14 +46,11 @@ jobs:
           ruby-version: '3.2'
           bundler-cache: true
 
-      # Install ImageMagick (required for jekyll-imagemagick plugin)
-      - name: Install ImageMagick
-        run: sudo apt-get update && sudo apt-get install -y imagemagick
-
-      - name: 📦 Install Python dependencies
-        run: pip3 install -r requirements.txt
-
-      # Image processing handled by jekyll-imagemagick plugin during build
+      - name: 📦 Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends imagemagick libmagickwand-dev
+          pip3 install -r requirements.txt
 
       - name: Cache Jekyll build
         uses: actions/cache@v4
