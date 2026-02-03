@@ -10,93 +10,74 @@
 <div class="videos-wrapper">
   <div class="container-md py-4">
 
-    {%- for group in grouped_videos -%}
-    <section class="videos-section fade-in mb-5">
+    {%- assign sorted_videos = all_videos | sort: "date" | reverse -%}
+    
+    <div class="videos-grid">
+      {%- for video in sorted_videos -%}
       
-      <!-- Section Label -->
-      <div class="section-label">
-        <div class="section-label__icon">
-          <i class="fas fa-video"></i>
-        </div>
-        <span class="section-label__text">
-          {%- if group.name != blank -%}
-            {{ group.name }}
+      {%- comment -%} Extract YouTube video ID for thumbnail and embed {%- endcomment -%}
+      {%- assign video_id = "" -%}
+      {%- assign thumbnail_url = video.thumbnail -%}
+      
+      {%- if video.url contains "youtube.com/watch" -%}
+        {%- assign video_id = video.url | split: "v=" | last | split: "&" | first -%}
+      {%- elsif video.url contains "youtu.be/" -%}
+        {%- assign video_id = video.url | split: "youtu.be/" | last | split: "?" | first -%}
+      {%- elsif video.url contains "youtube.com/embed/" -%}
+        {%- assign video_id = video.url | split: "embed/" | last | split: "?" | first -%}
+      {%- endif -%}
+      
+      {%- if thumbnail_url == blank and video_id != "" -%}
+        {%- assign thumbnail_url = "https://img.youtube.com/vi/" | append: video_id | append: "/maxresdefault.jpg" -%}
+      {%- endif -%}
+
+      <div class="video-card minimal-card minimal-card--interactive" 
+            data-video-id="{{ video_id }}" 
+            data-video-url="{{ video.url }}"
+            data-video-title="{{ video.title }}"
+            onclick="openVideoModal('{{ video_id }}', '{{ video.title | escape }}')">
+        
+        <!-- Video Thumbnail -->
+        <div class="video-card__thumbnail">
+          {%- if thumbnail_url != blank -%}
+            <img src="{{ thumbnail_url }}" alt="{{ video.title }}" loading="lazy" onerror="this.src='https://img.youtube.com/vi/{{ video_id }}/hqdefault.jpg'">
           {%- else -%}
-            Videos
+            <div class="video-card__placeholder">
+              <i class="fas fa-film"></i>
+            </div>
           {%- endif -%}
-        </span>
-      </div>
-
-      <!-- Videos Grid -->
-      <div class="videos-grid">
-        {%- for video in group.items -%}
-        
-        {%- comment -%} Extract YouTube video ID for thumbnail and embed {%- endcomment -%}
-        {%- assign video_id = "" -%}
-        {%- assign thumbnail_url = video.thumbnail -%}
-        
-        {%- if video.url contains "youtube.com/watch" -%}
-          {%- assign video_id = video.url | split: "v=" | last | split: "&" | first -%}
-        {%- elsif video.url contains "youtu.be/" -%}
-          {%- assign video_id = video.url | split: "youtu.be/" | last | split: "?" | first -%}
-        {%- elsif video.url contains "youtube.com/embed/" -%}
-          {%- assign video_id = video.url | split: "embed/" | last | split: "?" | first -%}
-        {%- endif -%}
-        
-        {%- if thumbnail_url == blank and video_id != "" -%}
-          {%- assign thumbnail_url = "https://img.youtube.com/vi/" | append: video_id | append: "/maxresdefault.jpg" -%}
-        {%- endif -%}
-
-        <div class="video-card minimal-card minimal-card--interactive" 
-             data-video-id="{{ video_id }}" 
-             data-video-url="{{ video.url }}"
-             data-video-title="{{ video.title }}"
-             onclick="openVideoModal('{{ video_id }}', '{{ video.title | escape }}')">
-          
-          <!-- Video Thumbnail -->
-          <div class="video-card__thumbnail">
-            {%- if thumbnail_url != blank -%}
-              <img src="{{ thumbnail_url }}" alt="{{ video.title }}" loading="lazy" onerror="this.src='https://img.youtube.com/vi/{{ video_id }}/hqdefault.jpg'">
-            {%- else -%}
-              <div class="video-card__placeholder">
-                <i class="fas fa-film"></i>
-              </div>
-            {%- endif -%}
-            <div class="video-card__play-overlay">
-              <i class="fas fa-play-circle"></i>
-            </div>
+          <div class="video-card__play-overlay">
+            <i class="fas fa-play-circle"></i>
           </div>
-          
-          <!-- Video Info -->
-          <div class="video-card__content">
-            <h3 class="video-card__title t-title">{{ video.title }}</h3>
-            
-            {%- if video.speaker != blank -%}
-            <div class="video-card__speaker">
-              <i class="fas fa-user"></i>
-              <span>{{ video.speaker }}</span>
-            </div>
-            {%- endif -%}
-            
-            {%- if video.description != blank -%}
-            <p class="video-card__desc t-body">{{ video.description | truncate: 120 }}</p>
-            {%- endif -%}
-            
-            {%- if video.date != blank -%}
-            <div class="video-card__meta">
-              <i class="fas fa-calendar-alt"></i>
-              <span>{{ video.date | date: "%B %d, %Y" }}</span>
-            </div>
-            {%- endif -%}
-          </div>
-          
         </div>
-
-        {%- endfor -%}
+        
+        <!-- Video Info -->
+        <div class="video-card__content">
+          <h3 class="video-card__title t-title">{{ video.title }}</h3>
+          
+          {%- if video.speaker != blank -%}
+          <div class="video-card__speaker">
+            <i class="fas fa-user"></i>
+            <span>{{ video.speaker }}</span>
+          </div>
+          {%- endif -%}
+          
+          {%- if video.description != blank -%}
+          <p class="video-card__desc t-body">{{ video.description | truncate: 120 }}</p>
+          {%- endif -%}
+          
+          {%- if video.date != blank -%}
+          <div class="video-card__meta">
+            <i class="fas fa-calendar-alt"></i>
+            <span>{{ video.date | date: "%B %d, %Y" }}</span>
+          </div>
+          {%- endif -%}
+        </div>
+        
       </div>
 
-    </section>
-    {%- endfor -%}
+      {%- endfor -%}
+    </div>
 
     {% if all_videos.size == 0 or all_videos == nil %}
       <div class="text-center py-5">
