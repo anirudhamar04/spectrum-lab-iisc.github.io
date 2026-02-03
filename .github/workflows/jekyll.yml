@@ -46,12 +46,9 @@ jobs:
           ruby-version: '3.2'
           bundler-cache: true
 
-      # Cache apt packages - bump APT_CACHE_VERSION to force reinstall
-      - name: Cache apt packages
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: imagemagick libmagickwand-dev
-          version: 1.0  # Bump this to reinstall dependencies
+      # Install ImageMagick (required for jekyll-imagemagick plugin)
+      - name: Install ImageMagick
+        run: sudo apt-get update && sudo apt-get install -y imagemagick
 
       - name: 📦 Install Python dependencies
         run: pip3 install -r requirements.txt

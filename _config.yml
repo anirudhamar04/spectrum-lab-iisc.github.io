@@ -434,7 +434,7 @@ external_links:
 #   convert -version
 imagemagick:
   enabled: true # true = templates generate WebP paths
-  skip_processing: true # true = don't run ImageMagick (using parallel script in CI instead)
+  skip_processing: false # true = don't run ImageMagick (using parallel script in CI instead)
   widths:
     - 480
     - 800
