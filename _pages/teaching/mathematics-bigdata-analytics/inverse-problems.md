@@ -107,7 +107,7 @@ resources:
     description: ''
   - title: "Influential Observations, High Leverage Points, and Outliers in Linear Regression"
     url: https://www.jstor.org/stable/2245477
-    description: '
+    description: ''
 teaching_assistants: []
 ---
 
