@@ -105,6 +105,9 @@ resources:
   - title: 'IE 498: Online Learning and Decision Making: Lecture 01 & 02'
     url: https://yuanz.web.illinois.edu/teaching/IE498fa19/lec_01_02.pdf
     description: ''
+  - title: "Influential Observations, High Leverage Points, and Outliers in Linear Regression"
+    url: https://www.jstor.org/stable/2245477
+    description: '
 teaching_assistants: []
 ---
 
